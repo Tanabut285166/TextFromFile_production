@@ -43,7 +43,7 @@ class TextExtracter:
         f.close()
 
 
-    def convert_pdf_to_jpg(self, filePath, saveTo="", save=True):
+    def convert_pdf_to_jpg(self, filePath, save=True):
         JPGNames = []
         fileName = self._name_from_path(filePath).replace(".pdf","")
         images = convert_from_path(filePath, poppler_path = self.poppler_path)
@@ -53,7 +53,7 @@ class TextExtracter:
             JPGNames.append( JPGName )
 
             if(save):
-                images[i].save( saveTo + JPGName, 'JPEG' )
+                images[i].save(JPGName, 'JPEG' )
             
         return JPGNames 
     
