@@ -8,7 +8,6 @@ app = Flask(__name__)
 MAX_FILE_FILESIZE = 0.5 * 1024 * 1024
 FILE_UPLOADS = r"D:\ocr\TextFromFile\src\upload"
 ALLOWED_FILE_EXTENSIONS = ["JPEG", "JPG", "PNG", "GIF", "DOCX", "DOC", "PDF"]
-
 poppler_path= r"C:/Program Files/poppler-21.03.0/Library/bin"
 tesseract_path= r"D:/ocr/Tesseract-OCR/tesseract.exe"
 fileReader = text_extracter.TextExtracter(poppler_path=poppler_path, tesseract_path=tesseract_path )
@@ -60,14 +59,18 @@ def upload_pdf():
             return {"error": "That file extension is not allowed"}
       
         filename = secure_filename(pdf.filename)
-        path = os.path.join(FILE_UPLOADS, filename)
-
-        pdf.save(path)
-        imagesName = fileReader.convert_pdf_to_jpg(filePath=path, save=True )
+        pdf_path = os.path.join(FILE_UPLOADS, filename)
+        pdf.save(pdf_path)
+        imagesName = fileReader.convert_pdf_to_jpg(filePath=pdf_path, save=True)
 
         for i in range(len(imagesName)):
-            print("--------------" + os.path.join(FILE_UPLOADS, imagesName[i]))
-            txt += fileReader.extract_jpg_to_text(os.path.join(FILE_UPLOADS, imagesName[i]))
+            jpg_path = os.path.join(FILE_UPLOADS, imagesName[i])
+            txt += fileReader.extract_jpg_to_text(jpg_path)
+
+        for dir_path, dirs, files in os.walk(FILE_UPLOADS):
+            for file_name in files:
+                file_path = os.path.join(dir_path, file_name)
+                os.remove(file_path)
 
         return jsonify(txt)
         
