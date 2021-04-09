@@ -49,7 +49,11 @@ def upload_pdf():
         save_path = os.path.join(FILE_UPLOADS, filename)
         file_input.save(save_path)
         fileJPGNames = fileReader.convert_pdf_to_jpg(save_path,save=True)
-        return {"ok": 200 }
+
+        for i in range(len(fileJPGNames)):
+            jpg_path = os.path.join(FILE_UPLOADS, fileJPGNames[i] )
+            result +=  fileReader.extract_jpg_to_text(jpg_path)
+        return jsonify(result)
 
     return {"eror" : "fail to read this file"}
 
